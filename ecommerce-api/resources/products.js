@@ -3,33 +3,37 @@ import fs from "fs";
 
 const router = express.Router();
 
+// Read the product data from the JSON file.
 function loadProducts() {
   const data = fs.readFileSync("./data/products.json");
   return JSON.parse(data);
 }
 
+// Get all products and apply search, category filtering,
+// or price sorting when the frontend requests them.
 router.get("/", (req, res) => {
   let products = loadProducts();
 
   const { search, category, sort } = req.query;
 
-  // search
+  // Filter products by their title if a search term is provided.
   if (search) {
     products = products.filter((product) =>
       product.title.toLowerCase().includes(search.toLowerCase()),
     );
   }
 
-  // category
+  // Filter products by category unless the user selects "all".
   if (category && category !== "all") {
     products = products.filter((product) => product.category === category);
   }
 
-  // sorting
+  // Sort products from the lowest price to the highest.
   if (sort === "price-asc") {
     products.sort((a, b) => a.price - b.price);
   }
 
+  // Sort products from the highest price to the lowest.
   if (sort === "price-desc") {
     products.sort((a, b) => b.price - a.price);
   }
@@ -37,19 +41,23 @@ router.get("/", (req, res) => {
   res.json(products);
 });
 
+// Get a list of all available product categories.
 router.get("/categories", (req, res) => {
   const products = loadProducts();
 
+  // Use Set to remove duplicate categories.
   const categories = [...new Set(products.map((p) => p.category))];
 
   res.json(categories);
 });
 
+// Find and return a single product using its ID.
 router.get("/:id", (req, res) => {
   const products = loadProducts();
 
   const product = products.find((p) => p.id === Number(req.params.id));
 
+  // Return a 404 response if the requested product does not exist.
   if (!product) {
     return res.status(404).json({
       message: "Product not found",
