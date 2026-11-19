@@ -22,6 +22,12 @@ The project consists of two integrated applications:
 - JSON files for product and order data.
 - CORS support for frontend integration.
 
+## Screenshots
+
+![Products page, cart and checkout of COMPX322-Mart](docs/ecommerce-screens.png)
+
+*Top: the **Products** page with search, category filter and price sort. Bottom: the **Cart** with quantity controls and order summary, and the **Checkout** form for customer and delivery details.*
+
 ## Technologies Used
 - React
 - JavaScript
